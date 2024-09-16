@@ -30,13 +30,23 @@ class Posts
 
   public function get_all_posts(WP_REST_Request $request)
   {
-    $posts_per_page = $request->get_param('perPage') ?: -1;
+    $posts_per_page = $request->get_param('perPage');
+    $postId = $request->get_param('postId');
 
-    $query = new WP_Query([
+    $args = [
       'post_type' => 'post',
       'post_status' => 'publish',
-      'posts_per_page' => $posts_per_page,
-    ]);
+    ];
+
+    if (!empty($postId) && is_numeric($postId)) {
+      $args['p'] = intval($postId);
+    }
+
+    if (!empty($posts_per_page) && is_numeric($posts_per_page)) {
+      $args['posts_per_page'] = intval($posts_per_page);
+    }
+
+    $query = new WP_Query($args);
 
     if (!$query->have_posts()) {
       return new WP_Error('no_posts', 'No posts found', ['status' => 404]);
