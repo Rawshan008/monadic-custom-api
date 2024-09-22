@@ -37,6 +37,36 @@ class Contact
         [
           'methods' => WP_REST_Server::CREATABLE,
           'callback' => [$this, 'create_contact'],
+          'args' => [
+            'name' => [
+              'required' => true,
+              'validate_callback' => function ($param, $request, $key) {
+                return !empty($param);
+              },
+              'sanitize_callback' => 'sanitize_text_field',
+            ],
+            'email' => [
+              'required' => true,
+              'validate_callback' => function ($param, $request, $key) {
+                return is_email($param);
+              },
+              'sanitize_callback' => 'sanitize_email',
+            ],
+            'phone' => [
+              'required' => true,
+              'validate_callback' => function ($param, $request, $key) {
+                return !empty($param);
+              },
+              'sanitize_callback' => 'sanitize_text_field',
+            ],
+            'message' => [
+              'required' => true,
+              'validate_callback' => function ($param, $request, $key) {
+                return !empty($param);
+              },
+              'sanitize_callback' => 'sanitize_textarea_field',
+            ],
+          ],
           'permission_callback' => [$this, 'get_item_permission_check']
         ]
       ]
@@ -82,10 +112,10 @@ class Contact
    */
   public function create_contact(WP_REST_Request $request)
   {
-    $name = sanitize_text_field($request->get_param('name'));
-    $email = sanitize_email($request->get_param('email'));
-    $phone = sanitize_text_field($request->get_param('phone'));
-    $message = sanitize_textarea_field($request->get_param('message'));
+    $name = $request->get_param('name');
+    $email = $request->get_param('email');
+    $phone = $request->get_param('phone');
+    $message = $request->get_param('message');
 
     $existing_contact = new WP_Query([
       'post_type' => 'contact',
@@ -125,7 +155,7 @@ class Contact
 
       return new WP_REST_Response([
         'status' => 'success',
-        'message' => __('Contact Create Successfully'),
+        'message' => __('Form Submit Successfully'),
         'post_id' => $post_id
       ], 200);
     }

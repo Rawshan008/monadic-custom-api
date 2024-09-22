@@ -30,14 +30,14 @@ class Page
 
   public function get_about_page_data(WP_REST_Request $request)
   {
-    $page = $request->get_param('page');
+    $slug = $request->get_param('slug');
     $args = [
       'post_type' => 'page',
       'post_status' => 'publish'
     ];
 
-    if (!empty($page)) {
-      $args['name'] = $page;
+    if (!empty($slug)) {
+      $args['name'] = $slug;
     }
 
     $query = new WP_Query($args);
