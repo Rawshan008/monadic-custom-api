@@ -12,7 +12,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
-class Posts
+class Page
 {
   public function __construct()
   {
@@ -21,31 +21,23 @@ class Posts
 
   public function register_route()
   {
-    register_rest_route('mca/v1', '/posts', [
+    register_rest_route('mca/v1', '/page', [
       'methods'  => WP_REST_Server::READABLE,
-      'callback' => [$this, 'get_all_posts'],
+      'callback' => [$this, 'get_about_page_data'],
       'permission_callback' => [$this, 'get_item_permission_check'],
     ]);
   }
 
-  public function get_all_posts(WP_REST_Request $request)
+  public function get_about_page_data(WP_REST_Request $request)
   {
-    $posts_per_page = $request->get_param('perPage');
-    $postId = $request->get_param('postId');
-
+    $page = $request->get_param('page');
     $args = [
-      'post_type' => 'post',
-      'post_status' => 'publish',
-      'orderby' => 'date',
-      'order' => 'DESC',
+      'post_type' => 'page',
+      'post_status' => 'publish'
     ];
 
-    if (!empty($postId) && is_numeric($postId)) {
-      $args['p'] = intval($postId);
-    }
-
-    if (!empty($posts_per_page) && is_numeric($posts_per_page)) {
-      $args['posts_per_page'] = intval($posts_per_page);
+    if (!empty($page)) {
+      $args['name'] = $page;
     }
 
     $query = new WP_Query($args);
@@ -62,11 +54,12 @@ class Posts
       $posts[] = [
         'id' => get_the_ID(),
         'title' => get_the_title(),
-        'excerpt' => get_the_excerpt(),
+        'slug' => get_post_field('post_name', get_the_ID()),
         'content' => get_the_content(),
         'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full'),
         'author' => get_the_author(),
-        'date' => get_the_date()
+        'date' => get_the_date(),
+        'short_description' => get_field('about_short_description', get_the_ID())
       ];
     }
     wp_reset_postdata();

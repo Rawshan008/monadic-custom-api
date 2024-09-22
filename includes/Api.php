@@ -3,7 +3,9 @@
 namespace MonadicCustomApi;
 
 use MonadicCustomApi\Api\Contact;
+use MonadicCustomApi\Api\FeaturePost;
 use MonadicCustomApi\Api\Home;
+use MonadicCustomApi\Api\Page;
 use MonadicCustomApi\Api\Posts;
 
 // Exit if accessed directly.
@@ -17,6 +19,8 @@ class Api
   {
     new Posts();
     new Home();
+    new FeaturePost();
+    new Page();
     new Contact();
   }
 }

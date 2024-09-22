@@ -12,7 +12,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WP_REST_Server;
 
-class Posts
+class FeaturePost
 {
   public function __construct()
   {
@@ -21,7 +21,7 @@ class Posts
 
   public function register_route()
   {
-    register_rest_route('mca/v1', '/posts', [
+    register_rest_route('mca/v1', '/featureposts', [
       'methods'  => WP_REST_Server::READABLE,
       'callback' => [$this, 'get_all_posts'],
       'permission_callback' => [$this, 'get_item_permission_check'],
@@ -31,18 +31,18 @@ class Posts
   public function get_all_posts(WP_REST_Request $request)
   {
     $posts_per_page = $request->get_param('perPage');
-    $postId = $request->get_param('postId');
-
     $args = [
       'post_type' => 'post',
       'post_status' => 'publish',
       'orderby' => 'date',
       'order' => 'DESC',
+      'meta_query' => [
+        [
+          'key' => 'feature_post',
+          'value' => 1
+        ]
+      ]
     ];
-
-    if (!empty($postId) && is_numeric($postId)) {
-      $args['p'] = intval($postId);
-    }
 
     if (!empty($posts_per_page) && is_numeric($posts_per_page)) {
       $args['posts_per_page'] = intval($posts_per_page);
