@@ -63,6 +63,7 @@ class Posts
         'excerpt' => get_the_excerpt(),
         'content' => get_the_content(),
         'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full'),
+        'author' => get_the_author(),
         'date' => get_the_date()
       ];
     }

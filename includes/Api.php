@@ -3,6 +3,7 @@
 namespace MonadicCustomApi;
 
 use MonadicCustomApi\Api\Contact;
+use MonadicCustomApi\Api\Home;
 use MonadicCustomApi\Api\Posts;
 
 // Exit if accessed directly.
@@ -15,6 +16,7 @@ class Api
   public function __construct()
   {
     new Posts();
+    new Home();
     new Contact();
   }
 }
