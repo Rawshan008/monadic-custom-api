@@ -2,6 +2,7 @@
 
 namespace MonadicCustomApi;
 
+use MonadicCustomApi\Api\Categories;
 use MonadicCustomApi\Api\Contact;
 use MonadicCustomApi\Api\FeaturePost;
 use MonadicCustomApi\Api\Home;
@@ -21,6 +22,7 @@ class Api
     new Home();
     new FeaturePost();
     new Page();
+    new Categories();
     new Contact();
   }
 }

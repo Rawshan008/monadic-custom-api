@@ -32,12 +32,15 @@ class Posts
   {
     $posts_per_page = $request->get_param('perPage');
     $postId = $request->get_param('postId');
+    $page = $request->get_param('page');
+    $category = $request->get_param('category');
 
     $args = [
       'post_type' => 'post',
       'post_status' => 'publish',
       'orderby' => 'date',
       'order' => 'DESC',
+      'paged' => !empty($page) && is_numeric($page) ? intval($page) : 1,
     ];
 
     if (!empty($postId) && is_numeric($postId)) {
@@ -46,6 +49,14 @@ class Posts
 
     if (!empty($posts_per_page) && is_numeric($posts_per_page)) {
       $args['posts_per_page'] = intval($posts_per_page);
+    }
+
+    if (!empty($category)) {
+      if (is_numeric($category)) {
+        $args['cat'] = intval($category);
+      } else {
+        $args['category_name'] = sanitize_text_field($category);
+      }
     }
 
     $query = new WP_Query($args);
@@ -66,7 +77,8 @@ class Posts
         'content' => get_the_content(),
         'featured_image' => get_the_post_thumbnail_url(get_the_ID(), 'full'),
         'author' => get_the_author(),
-        'date' => get_the_date()
+        'date' => get_the_date(),
+        'categories' => get_the_category()
       ];
     }
     wp_reset_postdata();
